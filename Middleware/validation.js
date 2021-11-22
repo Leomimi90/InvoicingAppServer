@@ -22,6 +22,7 @@ const forgotpasswordValidatror = [
     const phoneRegex = /^(\+237)(2|6)[0-9]{8,15}$/
 
     if (emailRegex.test(val) || phoneRegex.test(val)) {
+
       return val
 
     }

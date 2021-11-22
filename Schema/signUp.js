@@ -1,6 +1,6 @@
-const { Schema, Model } = require('mongoose')
+const { Schema, model } = require('mongoose')
 
-const Users = new Schema({
+const SignedUpUser = new Schema({
   name: {
     type: String,
     required: [true, 'this field is required']
@@ -12,6 +12,10 @@ const Users = new Schema({
   password: {
     type: String,
     required: [true, 'this field is required']
+  },
+  verificationCode: {
+    type: String,
+    reqired: true
   },
   active: {
     type: boolean,
@@ -25,4 +29,4 @@ const Users = new Schema({
   }
 )
 
-module.exports = model('users', Users)
+module.exports = model('signedUpUser', SignedUpUser)

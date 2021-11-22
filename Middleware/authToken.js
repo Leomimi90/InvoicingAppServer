@@ -1,9 +1,10 @@
 const { verify, sign } = require('jsonwebtoken')
 const { resolve } = require('path')
 const { readFileSync } = require('fs')
+require('dotenv').config
 
-const PRIVATE_KEY = readFileSync(resolve(__dirname, '../Environment/priv.pem'), 'utf8')
-const PUBLC_KEY = readFileSync(resolve(__dirname, '../Environment/pub.pem'), 'utf8')
+const PRIVATE_KEY = process.env.PRIVATE_KEY
+const PUBLIC_KEY = process.env.PUBLIC_KEY
 
 
 const signToken = async (_id, exp) => {

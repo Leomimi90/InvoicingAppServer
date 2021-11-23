@@ -19,6 +19,4 @@ app.use((req, res, next) => {
 })
 
 app.use(Routes)
-app.listen(`${port}`, () => {
-  return `server listening on port $`
-})
+app.listen(`${port}`)

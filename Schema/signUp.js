@@ -18,7 +18,7 @@ const SignedUpUser = new Schema({
     reqired: true
   },
   active: {
-    type: boolean,
+    type: Boolean,
     default: false
   },
 

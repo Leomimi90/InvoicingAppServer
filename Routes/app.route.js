@@ -11,6 +11,6 @@ Routes.get('/', (req, res) => {
 
 Routes.post('/signUp', [signUpValidator], createUser)
 Routes.post('/signIn', [signInValidator], signIn)
-Routes.post('/passwordReset', [forgotpasswordValidatror], passwordReset)
+// Routes.post('/passwordReset', [forgotpasswordValidatror], passwordReset)
 
 module.exports = Routes

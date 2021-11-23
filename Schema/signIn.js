@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose')
 
 const SignedInUser = new Schema({
   user_id: {
-    type: string,
+    type: String,
     require: [true, 'This field is required']
   },
   email: {

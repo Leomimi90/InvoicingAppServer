@@ -1,5 +1,5 @@
-const SignedUpUser = require('../Schema/SignedUpUser')
-const SignedInUser = require('../Schema/SignedInUser')
+const SignedUpUser = require('../Schema/signUp')
+const SignedInUser = require('../Schema/signIn')
 const { hashPassword, verifyHash } = require('../Utilities/cipher.util')
 const { signAccessToken, signRefreshToken } = require('../Middleware/authToken')
 

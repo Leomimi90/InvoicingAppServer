@@ -1,5 +1,5 @@
 
-const { createUser, signIn } = require('../Controllers/authConroller')
+const { createUser, signIn, activateUserAccount } = require('../Controllers/authConroller')
 const { signUpValidator, signInValidator, forgotpasswordValidatror } = require('../Middleware/validation')
 const { signRefreshToken, signAccessToken, authToken, timer } = require('../Middleware/authToken')
 
@@ -11,6 +11,7 @@ Routes.get('/', (req, res) => {
 
 Routes.post('/signUp', [signUpValidator], createUser)
 Routes.post('/signIn', [signInValidator], signIn)
+Routes.post('/activate', activateUserAccount)
 // Routes.post('/passwordReset', [forgotpasswordValidatror], passwordReset)
 
 module.exports = Routes

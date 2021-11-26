@@ -19,12 +19,12 @@ const createUser = async (req, res) => {
       name: name.trim(),
       email: email.trim(),
       password: hashPassword(password),
-      verificationCode: Math.round(Math.random() * 100000).toString(),
+      verificationCode: Math.round(Math.random() * 1000000).toString(),
       active: false
     }
 
     // send user confirmation code 
-    await sendEmail(newuser.email, `Account Activation`, `
+    await sendEmail(newUser.email, `Account Activation`, `
     <h2>
     Your Verification Code for your account
     <strong>
@@ -43,11 +43,13 @@ const createUser = async (req, res) => {
     res.status(200).json({ status: 200, message: create_user })
 
   } catch (error) {
+    // console.log('wahala dey');
     res.status(500).json({ status: 500, message: error.message })
   }
 }
 
 const signIn = async (req, res) => {
+  user
   try {
     const { email, password } = req.body
 
@@ -95,13 +97,13 @@ const signIn = async (req, res) => {
   }
 }
 
-const passwordReset = async (req, res) => {
-  try {
+// const passwordReset = async (req, res) => {
+//   try {
 
-  } catch (error) {
+//   } catch (error) {
 
-  }
-}
+//   }
+// }
 
 const activateUserAccount = async (req, res) => {
   try {
@@ -121,4 +123,29 @@ const activateUserAccount = async (req, res) => {
   }
 }
 
-module.exports = { createUser, signIn, passwordReset, activateUserAccount }
+const resendVerificationCode = async (req, res) => {
+  try {
+    const { email } = req.body
+    const user = await SignedUpUser.findOne({ email: email.trim() })
+    // send user confirmation code 
+    await sendEmail(email.trim(), `Account Activation`, `
+    <h2>
+    Your Verification Code for your account
+    <strong>
+    ${user.verificationCode.toString()}
+    </strong>
+    </h2>
+    <br>
+    <p>
+    Please Enter the verification code on our application to get Started
+    In our app.
+    </p>
+    `)
+
+    res.status(200).json({ status: 200, message: 'Sent' })
+  } catch (error) {
+
+  }
+}
+
+module.exports = { createUser, signIn, activateUserAccount, resendVerificationCode }

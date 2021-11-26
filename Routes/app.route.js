@@ -1,5 +1,5 @@
 
-const { createUser, signIn, activateUserAccount } = require('../Controllers/authConroller')
+const { createUser, signIn, activateUserAccount, resendVerificationCode } = require('../Controllers/authConroller')
 const { signUpValidator, signInValidator, forgotpasswordValidatror } = require('../Middleware/validation')
 const { signRefreshToken, signAccessToken, authToken, timer } = require('../Middleware/authToken')
 
@@ -13,5 +13,5 @@ Routes.post('/signUp', [signUpValidator], createUser)
 Routes.post('/signIn', [signInValidator], signIn)
 Routes.post('/activate', activateUserAccount)
 // Routes.post('/passwordReset', [forgotpasswordValidatror], passwordReset)
-
+Routes.post('/resendCode', resendVerificationCode)
 module.exports = Routes

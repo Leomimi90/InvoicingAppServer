@@ -3,9 +3,8 @@ const { resolve } = require('path')
 const { readFileSync } = require('fs')
 require('dotenv').config()
 
-const PRIVATE_KEY = process.env.PRIVATE_KEY
-const PUBLIC_KEY = process.env.PUBLIC_KEY
-
+const PRIVATE_KEY = readFileSync(resolve(__dirname + `/../Environment/priv.pem`), 'utf8')
+const PUBLIC_KEY = readFileSync(resolve(__dirname + `/../Environment/pub.pem`), 'utf8')
 
 const signToken = async (_id, exp) => {
 
@@ -15,6 +14,7 @@ const signToken = async (_id, exp) => {
       sub: _id,
       iat: Date.now()
     }
+
     const signedToken = sign(payload, PRIVATE_KEY, { expiresIn: exp, algorithm: 'RS256' })
     return {
       token: "Bearer " + signedToken,
@@ -22,14 +22,16 @@ const signToken = async (_id, exp) => {
       iat: Date.now()
     }
   } catch (error) {
-    return false
+    return error
   }
 }
 
+const signAccessToken = (_id) => signToken(_id, 3600)
+const signRefreshToken = (_id) => signToken(_id, 300)
 
 const authToken = async (req, res, next) => {
   try {
-    const authHeader = req.Headers['authorisation']
+    const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split('')[1]
 
     if (!token) return res.status(401).json({ status: 401, message: 'Invalid Request' })
@@ -60,8 +62,6 @@ const timer = (iat) => {
 
 }
 
-const signAccessToken = (_id) => signToken(_id, 3600)
-const signRefreshToken = (_id) => signToken(_id, 300)
 
 module.exports = { signRefreshToken, signAccessToken, authToken, timer }
 

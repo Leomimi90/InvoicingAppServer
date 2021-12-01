@@ -2,23 +2,23 @@ const { Schema, model } = require('mongoose')
 
 const Invoice = new Schema({
   itemNumber: {
-    type: number,
+    type: Number,
     require: [true, 'This field is required']
   },
   description: {
-    type: string,
+    type: String,
     require: [true, 'This field is required']
   },
   unitPrice: {
-    type: number,
+    type: Number,
     require: [true, 'This field is required']
   },
   quantity: {
-    type: number,
+    type: Number,
     require: [true, 'This field is required']
   },
   amount: {
-    type: number,
+    type: Number,
     require: [true, 'This field is required']
   },
 },

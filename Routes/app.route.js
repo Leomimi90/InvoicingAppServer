@@ -1,8 +1,8 @@
 
 const { createUser, signIn, activateUserAccount, resendVerificationCode } = require('../Controllers/authConroller')
 const { signUpValidator, signInValidator, forgotpasswordValidatror } = require('../Middleware/validation')
-const { signRefreshToken, signAccessToken, authToken, timer } = require('../Middleware/authToken')
-
+const { authToken } = require('../Middleware/authToken')
+const { createInvoice } = require('../Controllers/invoices')
 
 const Routes = require('express').Router()
 Routes.get('/', (req, res) => {
@@ -14,4 +14,7 @@ Routes.post('/signIn', [signInValidator], signIn)
 Routes.post('/activate', activateUserAccount)
 // Routes.post('/passwordReset', [forgotpasswordValidatror], passwordReset)
 Routes.post('/resendCode', resendVerificationCode)
+
+
+Routes.post('/createInvoice', [authToken], createInvoice)
 module.exports = Routes

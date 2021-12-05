@@ -1,41 +1,116 @@
-const Invoice = require('../Schema/invoices')
-const { signRefreshToken } = require('../Middleware/authToken')
+const Invoice = require("../Schema/invoices");
+const { signRefreshToken } = require("../Middleware/authToken");
+
 const createInvoice = async (req, res) => {
   try {
-    let { customerEmail, customerInfo, customerInvoice, issueDate, dueDate } = req.body
-    let user = await Invoice.find({ customerEmail: customerEmail })
+    let {
+      customeraddress,
+      customerInvoice,
+      issueDate,
+      dueDate,
+      total,
+      amountPaid,
+      balance,
+    } = req.body;
+    let user = await Invoice.find({
+      customerEmail: customeraddress.email.trim(),
+    });
     let customerInvoiceData = {
       items: customerInvoice.items,
-      description: customerInvoice.description,
-      rate: customerInvoice.rate,
-      qty: customerInvoice.qty,
-      valuePrice: () => this.rate.map((a, i) => a + this.qty[i]),
-      price: customerInvoiceData.valuePrice(),
+      description: customerInvoice.descriptions,
+      rate: customerInvoice.rates,
+      qty: customerInvoice.qtys,
+      valuePrice: () => this.rate.map((a, i) => a * this.qty[i]),
+      price: customerInvoiceData.valuePrice() || customerInvoice.price,
       totalAmountMethod: () => this.price.reduce((a, b) => a + b),
-      total: customerInvoiceData.totalAmountMethod(),
-      amountPaid: customerInvoice.amountPaid,
-      balance: customerInvoice.total - customerInvoice.amountPaid
-    }
-    let { valuePrice, totalAmountMethod, ...others } = customerInvoiceData
+      total: customerInvoiceData.totalAmountMethod() || total,
+      amountPaid: amountPaid,
+      balance: total - amountPaid || balance,
+    };
+    let { valuePrice, totalAmountMethod, ...others } = customerInvoiceData;
     let userInvoiceData = {
-      custormerEmail: customerEmail,
-      customerInfo: customerInfo,
+      userId: `${req.user.sub}`,
+      custormerEmail: customeraddress.email,
+      customerInfo: customeraddress,
       issueDate: issueDate || Date.now(),
-      dueDate: dueDate
-    }
+      dueDate: dueDate,
+    };
     if (user.length == 0) {
-      customerInvoiceData["number"] = 1,
-        userInvoiceData["customerInvoice"] = others
+      (customerInvoiceData["invoiceNumber"] = 1),
+        (userInvoiceData["customerInvoice"] = others);
     } else {
-      customerInvoiceData["number"] = user.customerInvoice.number + 1
+      customerInvoiceData["invoiceNumber"] =
+        eval(user.customerInvoice.invoiceNumber) + 1;
     }
-    const token = await signRefreshToken(req.user.sub)
-    res.status(200).json({ status: 200, message: token })
+    // await Invoice.create(userInvoiceData)
+    const token = await signRefreshToken(req.user.sub);
+    res.status(200).json({ status: 200, message: token });
   } catch (error) {
-    res.status(500).json({ status: 500, message: error.message })
+    res.status(500).json({ status: 500, message: error.message });
   }
-}
+};
 
+const updateInvoice = async (req, res) => {
+  try {
+    let {
+      customeraddress,
+      customerInvoice,
+      dueDate,
+      total,
+      amountPaid,
+      balance,
+    } = req.body;
+
+    let customerInvoiceData = {
+      items: customerInvoice.items,
+      description: customerInvoice.descriptions,
+      rate: customerInvoice.rates,
+      qty: customerInvoice.qtys,
+      valuePrice: () => this.rate.map((a, i) => a * this.qty[i]),
+      price: customerInvoiceData.valuePrice() || customerInvoice.price,
+      totalAmountMethod: () => this.price.reduce((a, b) => a + b),
+      total: customerInvoiceData.totalAmountMethod() || total,
+      amountPaid: amountPaid,
+      balance: total - amountPaid || balance,
+    };
+
+    let { valuePrice, totalAmountMethod, ...others } = customerInvoiceData;
+    let userInvoiceData = {
+      custormerEmail: customeraddress.email,
+      customerInfo: customeraddress,
+      dueDate: dueDate,
+      customerInvoice: others,
+    };
+    await Invoice.findByIdAndUpdate(req.params.id, { $set: userInvoiceData });
+
+    const token = await signRefreshToken(req.user.sub);
+    res.status(200).json({ status: 200, message: token });
+  } catch (error) {
+    res.status(500).json({ status: 500, message: error.message });
+  }
+};
+
+const deleteInvoice = async (req, res) => {
+  try {
+    await Invoice.findByIdAndDelete(req.params.id);
+    const token = await signRefreshToken(req.user.sub);
+    res.status(200).json({ status: 200, message: token });
+  } catch (error) {
+    res.status(500).json({ status: 500, message: error.message });
+  }
+};
+
+const getAllInvoices = async (req, res) => {
+  try {
+    let AllInvoices = await Invoice.find({ userId: `${req.user.sub}` });
+    res.status(200).json({ status: 200, message: AllInvoices });
+  } catch (error) {
+    res.status(500).json({ status: 500, message: error.message });
+  }
+};
 module.exports = {
-  createInvoice
-}
+  createInvoice,
+  updateInvoice,
+  deleteInvoice,
+  getAllInvoices,
+};

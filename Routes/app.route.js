@@ -18,7 +18,7 @@ Routes.post('/resendCode', resendVerificationCode)
 
 
 Routes.post('/createInvoice', [authToken], createInvoice)
-Routes.put('/updateInvoice/:id'[authToken], updateInvoice)
+Routes.put('/updateInvoice/:id', [authToken], updateInvoice)
 Routes.delete('/deleteInvoice/:id', [authToken], deleteInvoice)
 Routes.get('/allInvoices', getAllInvoices)
 
